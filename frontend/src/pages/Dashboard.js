@@ -55,6 +55,8 @@ export default function Dashboard({ token }) {
     { title: 'Performance Scorecards', description: 'Evaluate vendor performance with comprehensive scorecards. Track quality, delivery, cost, and innovation metrics.', path: '/scorecards', key: 'scorecards', icon: '🏆', color: '#ca8a04', bg: '#fef9c3' },
     { title: 'Approval Workflow', description: 'Manage procurement approval chains. Track purchase orders, contracts, and budget requests through approval stages.', path: '/approvals', key: 'approvals', icon: '✍️', color: '#9333ea', bg: '#f3e8ff' },
     { title: 'Category Strategy', description: 'Develop and manage sourcing strategies by category. Align procurement with business objectives and market dynamics.', path: '/category-strategy', key: 'categoryStrategy', icon: '🗂️', color: '#374151', bg: '#f3f4f6' },
+    { title: 'Supplier Diversity', description: 'AI ranks diverse-supplier opportunities and surfaces diversity gaps in your spend.', path: '/supplier-diversity', icon: '🌈', color: '#7c3aed', bg: '#f3e8ff' },
+    { title: 'Delivery & Quality Risk', description: 'Predict delivery and quality risk per supplier across a forward horizon.', path: '/delivery-risk', icon: '🚚', color: '#dc2626', bg: '#fee2e2' },
   ];
 
   const utilityFeatures = [

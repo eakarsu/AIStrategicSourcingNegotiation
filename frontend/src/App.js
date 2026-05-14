@@ -25,7 +25,30 @@ import NotificationsPage from './pages/NotificationsPage';
 import SearchPage from './pages/SearchPage';
 import ProfilePage from './pages/ProfilePage';
 import ExportPage from './pages/ExportPage';
+import AuctionRoomPage from './pages/AuctionRoomPage';
+import SupplierConsolidationPage from './pages/SupplierConsolidationPage';
+import ApprovalWorkflowPage from './pages/ApprovalWorkflowPage';
+import SupplierDiversityPage from './pages/SupplierDiversityPage';
+import DeliveryRiskPage from './pages/DeliveryRiskPage';
+import SupplyChainResiliencePage from './pages/SupplyChainResiliencePage';
+import InvoiceAnomalyPage from './pages/InvoiceAnomalyPage';
 import Navbar from './components/Navbar';
+// === Batch 08 Gaps & Frontend Mounts ===
+import CfSupplierDiversityOptimizationIdentifyingMinorityWomenSmall from './pages/CfSupplierDiversityOptimizationIdentifyingMinorityWomenSmall'
+import CfPredictiveDeliveryRiskFlaggingSuppliersLikelyTo from './pages/CfPredictiveDeliveryRiskFlaggingSuppliersLikelyTo'
+import CfSupplyChainResilienceMappingIdentifyingSingleSourced from './pages/CfSupplyChainResilienceMappingIdentifyingSingleSourced'
+import CfInvoiceAnomalyDetectionForManualReview from './pages/CfInvoiceAnomalyDetectionForManualReview'
+import CfMarketplaceIntegrationForDirectSourcingWithAuto from './pages/CfMarketplaceIntegrationForDirectSourcingWithAuto'
+import CfContractObligationTrackerWithAlertsForRenewals from './pages/CfContractObligationTrackerWithAlertsForRenewals'
+import GapNoAiDrivenSupplierDiversityOptimization from './pages/GapNoAiDrivenSupplierDiversityOptimization'
+import GapNoPredictiveDeliveryQualityRiskModel from './pages/GapNoPredictiveDeliveryQualityRiskModel'
+import GapNoInvoiceAnomalyDetectionAi from './pages/GapNoInvoiceAnomalyDetectionAi'
+import GapLimitedIntegrationsOnlyAnExportModuleNo from './pages/GapLimitedIntegrationsOnlyAnExportModuleNo'
+import GapNoSupplierPortalForCollaborativeBidding from './pages/GapNoSupplierPortalForCollaborativeBidding'
+import GapNoInvoiceMatchingThreeWayMatchAutomation from './pages/GapNoInvoiceMatchingThreeWayMatchAutomation'
+import GapNoContractObligationTrackingWithCalendarAlerts from './pages/GapNoContractObligationTrackingWithCalendarAlerts'
+import GapNoWebhooksForExternalSystemEvents from './pages/GapNoWebhooksForExternalSystemEvents'
+import GapNoESignatureWorkflowForContracts from './pages/GapNoESignatureWorkflowForContracts'
 
 function App() {
   const [token, setToken] = useState(localStorage.getItem('token'));
@@ -86,7 +109,30 @@ function App() {
             <Route path="/search" element={<SearchPage token={token} />} />
             <Route path="/profile" element={<ProfilePage token={token} user={user} onUserUpdate={handleUserUpdate} />} />
             <Route path="/export" element={<ExportPage token={token} />} />
-            <Route path="*" element={<Navigate to="/" />} />
+            <Route path="/auction-room" element={<AuctionRoomPage token={token} />} />
+            <Route path="/supplier-consolidation" element={<SupplierConsolidationPage token={token} />} />
+            <Route path="/approval-workflow" element={<ApprovalWorkflowPage token={token} />} />
+            <Route path="/supplier-diversity" element={<SupplierDiversityPage token={token} />} />
+            <Route path="/delivery-risk" element={<DeliveryRiskPage token={token} />} />
+            <Route path="/supply-chain-resilience" element={<SupplyChainResiliencePage token={token} />} />
+            <Route path="/invoice-anomaly" element={<InvoiceAnomalyPage token={token} />} />
+            {/* // === Batch 08 Gaps & Frontend Mounts === */}
+      <Route path="/cf-supplier-diversity-optimization-identifying-minority-women-small-suppliers" element={<ProtectedRoute><CfSupplierDiversityOptimizationIdentifyingMinorityWomenSmall /></ProtectedRoute>} />
+      <Route path="/cf-predictive-delivery-risk-flagging-suppliers-likely-to-miss" element={<ProtectedRoute><CfPredictiveDeliveryRiskFlaggingSuppliersLikelyTo /></ProtectedRoute>} />
+      <Route path="/cf-supply-chain-resilience-mapping-identifying-single-sourced-categories" element={<ProtectedRoute><CfSupplyChainResilienceMappingIdentifyingSingleSourced /></ProtectedRoute>} />
+      <Route path="/cf-invoice-anomaly-detection-for-manual-review" element={<ProtectedRoute><CfInvoiceAnomalyDetectionForManualReview /></ProtectedRoute>} />
+      <Route path="/cf-marketplace-integration-for-direct-sourcing-with-auto-price-monitoring" element={<ProtectedRoute><CfMarketplaceIntegrationForDirectSourcingWithAuto /></ProtectedRoute>} />
+      <Route path="/cf-contract-obligation-tracker-with-alerts-for-renewals-sla" element={<ProtectedRoute><CfContractObligationTrackerWithAlertsForRenewals /></ProtectedRoute>} />
+      <Route path="/gap-no-ai-driven-supplier-diversity-optimization" element={<ProtectedRoute><GapNoAiDrivenSupplierDiversityOptimization /></ProtectedRoute>} />
+      <Route path="/gap-no-predictive-delivery-quality-risk-model" element={<ProtectedRoute><GapNoPredictiveDeliveryQualityRiskModel /></ProtectedRoute>} />
+      <Route path="/gap-no-invoice-anomaly-detection-ai" element={<ProtectedRoute><GapNoInvoiceAnomalyDetectionAi /></ProtectedRoute>} />
+      <Route path="/gap-limited-integrations-only-an-export-module-no-erp" element={<ProtectedRoute><GapLimitedIntegrationsOnlyAnExportModuleNo /></ProtectedRoute>} />
+      <Route path="/gap-no-supplier-portal-for-collaborative-bidding" element={<ProtectedRoute><GapNoSupplierPortalForCollaborativeBidding /></ProtectedRoute>} />
+      <Route path="/gap-no-invoice-matching-three-way-match-automation" element={<ProtectedRoute><GapNoInvoiceMatchingThreeWayMatchAutomation /></ProtectedRoute>} />
+      <Route path="/gap-no-contract-obligation-tracking-with-calendar-alerts" element={<ProtectedRoute><GapNoContractObligationTrackingWithCalendarAlerts /></ProtectedRoute>} />
+      <Route path="/gap-no-webhooks-for-external-system-events" element={<ProtectedRoute><GapNoWebhooksForExternalSystemEvents /></ProtectedRoute>} />
+      <Route path="/gap-no-e-signature-workflow-for-contracts" element={<ProtectedRoute><GapNoESignatureWorkflowForContracts /></ProtectedRoute>} />
+      <Route path="*" element={<Navigate to="/" />} />
           </Routes>
         </main>
       </div>
