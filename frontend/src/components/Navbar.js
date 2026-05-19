@@ -65,6 +65,9 @@ export default function Navbar({ user, onLogout, token }) {
 
       <div className="navbar-right">
         {/* Quick Links */}
+        <Link to="/custom-views" data-testid="sourcing-views-link" style={{ color: 'rgba(255,255,255,0.95)', textDecoration: 'none', fontSize: 13, fontWeight: 600, padding: '6px 10px', background: 'rgba(255,255,255,0.12)', borderRadius: 6 }}>
+          Sourcing Views
+        </Link>
         <Link to="/export" style={{ color: 'rgba(255,255,255,0.8)', textDecoration: 'none', fontSize: 13, fontWeight: 500, padding: '6px 10px' }}>
           Export
         </Link>

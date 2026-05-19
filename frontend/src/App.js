@@ -33,6 +33,7 @@ import DeliveryRiskPage from './pages/DeliveryRiskPage';
 import SupplyChainResiliencePage from './pages/SupplyChainResiliencePage';
 import InvoiceAnomalyPage from './pages/InvoiceAnomalyPage';
 import Navbar from './components/Navbar';
+import CustomViewsPage from './pages/CustomViewsPage';
 // === Batch 08 Gaps & Frontend Mounts ===
 import CfSupplierDiversityOptimizationIdentifyingMinorityWomenSmall from './pages/CfSupplierDiversityOptimizationIdentifyingMinorityWomenSmall'
 import CfPredictiveDeliveryRiskFlaggingSuppliersLikelyTo from './pages/CfPredictiveDeliveryRiskFlaggingSuppliersLikelyTo'
@@ -49,6 +50,12 @@ import GapNoInvoiceMatchingThreeWayMatchAutomation from './pages/GapNoInvoiceMat
 import GapNoContractObligationTrackingWithCalendarAlerts from './pages/GapNoContractObligationTrackingWithCalendarAlerts'
 import GapNoWebhooksForExternalSystemEvents from './pages/GapNoWebhooksForExternalSystemEvents'
 import GapNoESignatureWorkflowForContracts from './pages/GapNoESignatureWorkflowForContracts'
+
+// Minimal ProtectedRoute shim — earlier batch referenced this without importing/defining it.
+function ProtectedRoute({ children }) {
+  const t = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
+  return t ? children : <Navigate to="/" />;
+}
 
 function App() {
   const [token, setToken] = useState(localStorage.getItem('token'));
@@ -116,6 +123,7 @@ function App() {
             <Route path="/delivery-risk" element={<DeliveryRiskPage token={token} />} />
             <Route path="/supply-chain-resilience" element={<SupplyChainResiliencePage token={token} />} />
             <Route path="/invoice-anomaly" element={<InvoiceAnomalyPage token={token} />} />
+            <Route path="/custom-views" element={<CustomViewsPage token={token} />} />
             {/* // === Batch 08 Gaps & Frontend Mounts === */}
       <Route path="/cf-supplier-diversity-optimization-identifying-minority-women-small-suppliers" element={<ProtectedRoute><CfSupplierDiversityOptimizationIdentifyingMinorityWomenSmall /></ProtectedRoute>} />
       <Route path="/cf-predictive-delivery-risk-flagging-suppliers-likely-to-miss" element={<ProtectedRoute><CfPredictiveDeliveryRiskFlaggingSuppliersLikelyTo /></ProtectedRoute>} />

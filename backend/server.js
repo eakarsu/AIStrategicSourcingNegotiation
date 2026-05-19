@@ -141,3 +141,11 @@ app.use('/api/gap-no-invoice-matching-three-way-match-automation', require('./ro
 app.use('/api/gap-no-contract-obligation-tracking-with-calendar-alerts', require('./routes/gapNoContractObligationTrackingWithCalendarAlerts'));
 app.use('/api/gap-no-webhooks-for-external-system-events', require('./routes/gapNoWebhooksForExternalSystemEvents'));
 app.use('/api/gap-no-e-signature-workflow-for-contracts', require('./routes/gapNoESignatureWorkflowForContracts'));
+
+// === Custom Sourcing Views (mount BEFORE 404) ===
+app.use('/api/custom-views', require('./routes/customViews'));
+
+// 404 fallback (must remain last)
+app.use((req, res) => {
+  res.status(404).json({ error: 'Not Found', path: req.originalUrl });
+});
