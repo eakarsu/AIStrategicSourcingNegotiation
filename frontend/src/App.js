@@ -34,6 +34,11 @@ import SupplyChainResiliencePage from './pages/SupplyChainResiliencePage';
 import InvoiceAnomalyPage from './pages/InvoiceAnomalyPage';
 import Navbar from './components/Navbar';
 import CustomViewsPage from './pages/CustomViewsPage';
+import CodexCustomVizFeature from './pages/CodexCustomVizFeature';
+import CodexOperationsFeature from './pages/CodexOperationsFeature';
+
+import TimelineView from './pages/TimelineView';
+
 // === Batch 08 Gaps & Frontend Mounts ===
 import CfSupplierDiversityOptimizationIdentifyingMinorityWomenSmall from './pages/CfSupplierDiversityOptimizationIdentifyingMinorityWomenSmall'
 import CfPredictiveDeliveryRiskFlaggingSuppliersLikelyTo from './pages/CfPredictiveDeliveryRiskFlaggingSuppliersLikelyTo'
@@ -95,6 +100,10 @@ function App() {
         <Navbar user={user} onLogout={handleLogout} token={token} />
         <main className="main-content">
           <Routes>
+        <Route path="/insights/timeline" element={<ProtectedRoute><TimelineView /></ProtectedRoute>} />
+        <Route path="/codex/custom-viz" element={<ProtectedRoute><CodexCustomVizFeature /></ProtectedRoute>} />
+        <Route path="/codex/operations" element={<ProtectedRoute><CodexOperationsFeature /></ProtectedRoute>} />
+
             <Route path="/" element={<Dashboard token={token} />} />
             <Route path="/rfp" element={<RFPPage token={token} />} />
             <Route path="/bids" element={<BidsPage token={token} />} />

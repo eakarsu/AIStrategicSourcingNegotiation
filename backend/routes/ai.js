@@ -2,13 +2,13 @@ const express = require('express');
 const router = express.Router();
 const auth = require('../middleware/auth');
 const https = require('https');
-const rateLimit = require('express-rate-limit');
+const { rateLimit, ipKeyGenerator } = require('express-rate-limit');
 
 // Rate limiter: 20 AI calls per hour per user
 const aiRateLimiter = rateLimit({
   windowMs: 60 * 60 * 1000,
   max: 20,
-  keyGenerator: (req) => req.user ? 'user:' + (req.user.id || req.user.userId) : req.ip,
+  keyGenerator: (req, res) => req.user ? 'user:' + (req.user.id || req.user.userId) : ipKeyGenerator(req, res),
   message: { error: 'Too many AI requests, please try again later.' }
 });
 
@@ -33,7 +33,7 @@ async function callOpenRouter(prompt, systemPrompt) {
     e.statusCode = 503;
     throw e;
   }
-  const model = 'anthropic/claude-3-5-sonnet-20241022';
+  const model = process.env.OPENROUTER_MODEL || 'anthropic/claude-3-5-sonnet-20241022';
 
   const body = JSON.stringify({
     model,
