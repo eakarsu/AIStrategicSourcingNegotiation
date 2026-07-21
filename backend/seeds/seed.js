@@ -3,14 +3,18 @@ const { Pool } = require('pg');
 const bcrypt = require('bcryptjs');
 
 const pool = new Pool({
-  host: process.env.DB_HOST,
-  port: process.env.DB_PORT,
-  database: process.env.DB_NAME,
-  user: process.env.DB_USER,
-  password: process.env.DB_PASSWORD,
+  connectionString: process.env.DATABASE_URL,
 });
 
+function requireDestructiveSeed() {
+  if (process.env.ALLOW_DESTRUCTIVE_SEED !== '1') throw new Error('Set ALLOW_DESTRUCTIVE_SEED=1 to reset and seed the database');
+  if (!process.env.DATABASE_URL) throw new Error('DATABASE_URL is required');
+  if ((process.env.SEED_ADMIN_PASSWORD || '').length < 12) throw new Error('SEED_ADMIN_PASSWORD must contain at least 12 characters');
+  return process.env.SEED_ADMIN_PASSWORD;
+}
+
 async function seed() {
+  const seedPassword = requireDestructiveSeed();
   const client = await pool.connect();
   try {
     // Drop and recreate tables
@@ -389,7 +393,7 @@ async function seed() {
 
     // Seed users
     const salt = await bcrypt.genSalt(10);
-    const hash = await bcrypt.hash('password123', salt);
+    const hash = await bcrypt.hash(seedPassword, salt);
     await client.query(`
       INSERT INTO users (name, email, password_hash, role) VALUES
       ('Sarah Chen', 'sarah@company.com', $1, 'procurement_manager'),
@@ -766,7 +770,7 @@ async function seed() {
     console.log('Notes seeded');
 
     console.log('\n✅ Database seeded successfully!');
-    console.log('Demo login: admin@company.com / password123');
+    console.log('Seed administrator created; password was supplied through the environment');
   } catch (err) {
     console.error('Seed error:', err.message);
     throw err;

@@ -1,12 +1,7 @@
 require('dotenv').config({ path: require('path').join(__dirname, '..', '.env') });
 
 // Validate required env vars at startup
-const requiredEnv = ['OPENROUTER_API_KEY', 'JWT_SECRET', 'DB_HOST'];
-const missingEnv = requiredEnv.filter(k => !process.env[k]);
-if (missingEnv.length) {
-  console.error(`Missing required environment variables: ${missingEnv.join(', ')}`);
-  process.exit(1);
-}
+if ((process.env.JWT_SECRET || '').length < 32 || !process.env.GOVERNANCE_TENANT_ID || !process.env.DATABASE_URL) throw new Error('JWT_SECRET (32+ characters), GOVERNANCE_TENANT_ID, and DATABASE_URL are required');
 
 const express = require('express');
 const cors = require('cors');
@@ -24,16 +19,13 @@ const io = new Server(server, {
   }
 });
 
-const PORT = process.env.BACKEND_PORT || 3001;
+const PORT = process.env.PORT || process.env.BACKEND_PORT || 3001;
 
 // Database pool
 const pool = new Pool({
-  host: process.env.DB_HOST,
-  port: process.env.DB_PORT,
-  database: process.env.DB_NAME,
-  user: process.env.DB_USER,
-  password: process.env.DB_PASSWORD,
+  connectionString: process.env.DATABASE_URL,
 });
+const generatedRoutesEnabled = process.env.ENABLE_GENERATED_FEATURES === 'true' && process.env.NODE_ENV !== 'production';
 
 // Make pool and io available to routes
 app.locals.pool = pool;
@@ -47,25 +39,10 @@ app.use(cors({
 }));
 app.use(express.json({ limit: '10mb' }));
 
-// Init ai_results table
-pool.query(`
-  CREATE TABLE IF NOT EXISTS ai_results (
-    id SERIAL PRIMARY KEY,
-    user_id INTEGER,
-    endpoint VARCHAR(100),
-    input_data JSONB,
-    result JSONB,
-    created_at TIMESTAMP DEFAULT NOW()
-  )
-`).catch(console.error);
-
-// Init uploads dir
-const fs = require('fs');
-const uploadsDir = require('path').join(__dirname, 'uploads');
-if (!fs.existsSync(uploadsDir)) fs.mkdirSync(uploadsDir);
-
 // Routes
 app.use('/api/auth', require('./routes/auth'));
+app.get('/api/health', (req, res) => res.json({ status: 'ok', timestamp: new Date().toISOString() }));
+app.use('/api', require('./middleware/auth'));
 app.use('/api/rfp', require('./routes/rfp'));
 app.use('/api/rfp-requests', require('./routes/rfp'));
 app.use('/api/bids', require('./routes/bids'));
@@ -82,22 +59,17 @@ app.use('/api/market-intel', require('./routes/marketIntel'));
 app.use('/api/scorecards', require('./routes/scorecards'));
 app.use('/api/approvals', require('./routes/approvals'));
 app.use('/api/category-strategy', require('./routes/categoryStrategy'));
-app.use('/api/ai', require('./routes/ai'));
+if (generatedRoutesEnabled) app.use('/api/ai', require('./routes/ai'));
 app.use('/api/export', require('./routes/export'));
 app.use('/api/activity-log', require('./routes/activityLog'));
 app.use('/api/notifications', require('./routes/notifications'));
 app.use('/api/search', require('./routes/search'));
 app.use('/api/notes', require('./routes/notes'));
 
-// Health check
-app.get('/api/health', (req, res) => {
-  res.json({ status: 'ok', timestamp: new Date().toISOString() });
-});
-
 // Socket.io - Auction rooms
 const auctionRooms = new Map();
 
-io.on('connection', (socket) => {
+if (generatedRoutesEnabled) io.on('connection', (socket) => {
   console.log('Socket connected:', socket.id);
 
   socket.on('join-auction', (auctionId) => {
@@ -126,26 +98,9 @@ io.on('connection', (socket) => {
   });
 });
 
+app.use('/api/governed-sourcing-negotiation', require('./governance'));
+app.use('/api/governance', require('./governance'));
+
 server.listen(PORT, () => {
   console.log(`Backend server running on port ${PORT}`);
-});
-app.use('/api/supplier-diversity-optimizer', require('./routes/supplierDiversityOptimizer')); app.use('/api/predictive-delivery-risk', require('./routes/predictiveDeliveryRisk')); app.use('/api/supply-chain-resilience-mapping', require('./routes/supplyChainResilienceMapping')); app.use('/api/invoice-anomaly-detection', require('./routes/invoiceAnomalyDetection')); app.use('/api/marketplace-integration', require('./routes/marketplaceIntegration')); app.use('/api/contract-obligation-tracker', require('./routes/contractObligationTracker'));
-
-// === Batch 08 Gaps & Frontend Mounts ===
-app.use('/api/gap-no-ai-driven-supplier-diversity-optimization', require('./routes/gapNoAiDrivenSupplierDiversityOptimization'));
-app.use('/api/gap-no-predictive-delivery-quality-risk-model', require('./routes/gapNoPredictiveDeliveryQualityRiskModel'));
-app.use('/api/gap-no-invoice-anomaly-detection-ai', require('./routes/gapNoInvoiceAnomalyDetectionAi'));
-app.use('/api/gap-limited-integrations-only-an-export-module-no-erp', require('./routes/gapLimitedIntegrationsOnlyAnExportModuleNoErp'));
-app.use('/api/gap-no-supplier-portal-for-collaborative-bidding', require('./routes/gapNoSupplierPortalForCollaborativeBidding'));
-app.use('/api/gap-no-invoice-matching-three-way-match-automation', require('./routes/gapNoInvoiceMatchingThreeWayMatchAutomation'));
-app.use('/api/gap-no-contract-obligation-tracking-with-calendar-alerts', require('./routes/gapNoContractObligationTrackingWithCalendarAlerts'));
-app.use('/api/gap-no-webhooks-for-external-system-events', require('./routes/gapNoWebhooksForExternalSystemEvents'));
-app.use('/api/gap-no-e-signature-workflow-for-contracts', require('./routes/gapNoESignatureWorkflowForContracts'));
-
-// === Custom Sourcing Views (mount BEFORE 404) ===
-app.use('/api/custom-views', require('./routes/customViews'));
-
-// 404 fallback (must remain last)
-app.use((req, res) => {
-  res.status(404).json({ error: 'Not Found', path: req.originalUrl });
 });

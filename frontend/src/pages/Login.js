@@ -9,11 +9,6 @@ export default function Login({ onLogin }) {
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
 
-  const handleAutoFill = () => {
-    setEmail('admin@company.com');
-    setPassword('password123');
-  };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -37,9 +32,6 @@ export default function Login({ onLogin }) {
           <p>Procurement Intelligence Platform</p>
         </div>
         <form onSubmit={handleSubmit}>
-          <button type="button" className="btn btn-auto-fill" onClick={handleAutoFill}>
-            Auto-Fill Demo Credentials
-          </button>
           <div className="form-group">
             <label>Email Address</label>
             <input
