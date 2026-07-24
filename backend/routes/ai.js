@@ -1,7 +1,6 @@
 const express = require('express');
 const router = express.Router();
 const auth = require('../middleware/auth');
-const https = require('https');
 const { rateLimit, ipKeyGenerator } = require('express-rate-limit');
 
 // Rate limiter: 20 AI calls per hour per user
@@ -35,61 +34,38 @@ async function callOpenRouter(prompt, systemPrompt) {
   }
   const model = process.env.OPENROUTER_MODEL || 'anthropic/claude-3-5-sonnet-20241022';
 
-  const body = JSON.stringify({
-    model,
-    messages: [
-      { role: 'system', content: systemPrompt },
-      { role: 'user', content: prompt }
-    ],
-    max_tokens: 4000,
-    temperature: 0.7
+  const baseUrl = process.env.OPENROUTER_BASE_URL || 'https://openrouter.ai/api/v1';
+  const response = await fetch(`${baseUrl.replace(/\/$/, '')}/chat/completions`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${apiKey}`,
+      'HTTP-Referer': process.env.CLIENT_URL || 'http://localhost:3000',
+      'X-Title': 'AI Strategic Sourcing'
+    },
+    body: JSON.stringify({
+      model,
+      messages: [
+        { role: 'system', content: systemPrompt },
+        { role: 'user', content: prompt }
+      ],
+      max_tokens: 2000,
+      temperature: 0.4
+    })
   });
-
-  return new Promise((resolve, reject) => {
-    const options = {
-      hostname: 'openrouter.ai',
-      path: '/api/v1/chat/completions',
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${apiKey}`,
-        'HTTP-Referer': 'http://localhost:3000',
-        'X-Title': 'AI Strategic Sourcing'
-      }
-    };
-
-    const timeout = setTimeout(() => reject(new Error('AI request timed out')), 30000);
-
-    const req = https.request(options, (res) => {
-      let data = '';
-      res.on('data', chunk => data += chunk);
-      res.on('end', () => {
-        clearTimeout(timeout);
-        try {
-          const parsed = JSON.parse(data);
-          if (parsed.error) reject(new Error(parsed.error.message || 'OpenRouter API error'));
-          else resolve(parsed.choices[0].message.content);
-        } catch (e) {
-          reject(new Error('Failed to parse AI response'));
-        }
-      });
-    });
-
-    req.on('error', (e) => { clearTimeout(timeout); reject(e); });
-    req.write(body);
-    req.end();
-  });
+  const rawBody = await response.text();
+  if (!response.ok) throw new Error(`OpenRouter API error (${response.status}): ${rawBody}`);
+  const parsed = JSON.parse(rawBody);
+  const content = parsed.choices?.[0]?.message?.content;
+  if (!content) throw new Error('OpenRouter returned an empty response');
+  return content;
 }
 
 async function persistAIResult(pool, userId, endpoint, inputData, result) {
-  try {
-    await pool.query(
-      'INSERT INTO ai_results (user_id, endpoint, input_data, result) VALUES ($1, $2, $3, $4)',
-      [userId, endpoint, JSON.stringify(inputData), JSON.stringify(result)]
-    );
-  } catch (err) {
-    console.error('Failed to persist AI result:', err.message);
-  }
+  await pool.query(
+    'INSERT INTO ai_results (user_id, endpoint, input_data, result) VALUES ($1, $2, $3, $4)',
+    [userId, endpoint, JSON.stringify(inputData), JSON.stringify(result)]
+  );
 }
 
 // Generate RFP
