@@ -33,6 +33,7 @@ import DeliveryRiskPage from './pages/DeliveryRiskPage';
 import SupplyChainResiliencePage from './pages/SupplyChainResiliencePage';
 import InvoiceAnomalyPage from './pages/InvoiceAnomalyPage';
 import Navbar from './components/Navbar';
+import Sidebar from './components/Sidebar';
 import CustomViewsPage from './pages/CustomViewsPage';
 import CodexCustomVizFeature from './pages/CodexCustomVizFeature';
 import CodexOperationsFeature from './pages/CodexOperationsFeature';
@@ -96,8 +97,8 @@ function App() {
 
   return (
     <Router>
-      <div className="app-container">
-        <Navbar user={user} onLogout={handleLogout} token={token} />
+      <div className="app-shell">
+        <Sidebar user={user} onLogout={handleLogout} />
         <main className="main-content">
           <Routes>
         <Route path="/insights/timeline" element={<ProtectedRoute><TimelineView /></ProtectedRoute>} />
