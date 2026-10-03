@@ -33,6 +33,7 @@ import DeliveryRiskPage from './pages/DeliveryRiskPage';
 import SupplyChainResiliencePage from './pages/SupplyChainResiliencePage';
 import InvoiceAnomalyPage from './pages/InvoiceAnomalyPage';
 import Navbar from './components/Navbar';
+import AppSidebar from './components/AppSidebar';
 import CustomViewsPage from './pages/CustomViewsPage';
 import CodexCustomVizFeature from './pages/CodexCustomVizFeature';
 import CodexOperationsFeature from './pages/CodexOperationsFeature';
@@ -96,7 +97,8 @@ function App() {
 
   return (
     <Router>
-      <div className="app-container">
+      <div className="app-container codex-nav-shell">
+        <AppSidebar />
         <Navbar user={user} onLogout={handleLogout} token={token} />
         <main className="main-content">
           <Routes>
