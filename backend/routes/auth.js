@@ -33,6 +33,27 @@ router.post('/login', async (req, res) => {
   }
 });
 
+// Local demo sign-in uses the existing account without sending its password to the browser.
+// Only the configured development account can use this route. Production never exposes it.
+const demoEnabled = () => process.env.NODE_ENV !== 'production' && !!process.env.DEMO_EMAIL && !!process.env.DEMO_PASSWORD;
+router.get('/demo-status', (_req, res) => res.json({ available: demoEnabled() }));
+router.post('/demo-login', async (req, res) => {
+  if (!demoEnabled()) return res.status(503).json({ error: 'Demo login is not configured for this server' });
+  try {
+    const result = await req.app.locals.pool.query('SELECT * FROM users WHERE email = $1', [process.env.DEMO_EMAIL]);
+    const user = result.rows[0];
+    if (!user || !await bcrypt.compare(process.env.DEMO_PASSWORD, user.password_hash)) return res.status(503).json({ error: 'Configured demo account is unavailable' });
+    const token = jwt.sign(
+      { id: user.id, email: user.email, name: user.name, role: user.role, tenantId: process.env.GOVERNANCE_TENANT_ID, subjectIds: [`actor:user:${user.id}`] },
+      process.env.JWT_SECRET,
+      { algorithm: 'HS256', expiresIn: '24h' }
+    );
+    res.json({ token, user: { id: user.id, email: user.email, name: user.name, role: user.role } });
+  } catch (_) {
+    res.status(503).json({ error: 'Configured demo account is unavailable' });
+  }
+});
+
 // Register
 router.post('/register', async (req, res) => {
   try {

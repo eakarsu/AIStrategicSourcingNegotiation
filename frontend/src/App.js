@@ -1,3 +1,4 @@
+import AIReportLibrary from "./components/AIReportLibrary";
 import React, { useState } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
@@ -96,7 +97,7 @@ function App() {
   }
 
   return (
-    <Router>
+    <><AIReportLibrary floating /><Router>
       <div className="app-container codex-nav-shell">
         <AppSidebar />
         <Navbar user={user} onLogout={handleLogout} token={token} />
@@ -156,7 +157,7 @@ function App() {
         </main>
       </div>
       <ToastContainer position="top-right" autoClose={3000} />
-    </Router>
+    </Router></>
   );
 }
 

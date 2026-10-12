@@ -1,3 +1,4 @@
+import FormattedAIReport from "../components/FormattedAIReport";
 import React, { useState } from 'react';
 import axios from 'axios';
 import { toast } from 'react-toastify';
@@ -21,7 +22,7 @@ export default function SupplyChainResiliencePage({ token }) {
         scenario_horizon_months: Number(horizon) || 12,
       };
       const res = await axios.post(`${API}/api/ai/supply-chain-resilience`, payload, { headers });
-      setResult(res.data.parsed || res.data);
+      setResult(res.data.parsed ?? res.data);
       toast.success('Resilience map generated');
     } catch (err) {
       const status = err.response?.status;
@@ -38,6 +39,7 @@ export default function SupplyChainResiliencePage({ token }) {
         Map single-source dependencies, geographic concentration, and shock scenarios; recommend redundancy actions.
       </p>
 
+      <div className="ai-preset-bar"><div><strong>Example scenarios</strong><p>Fill the analysis fields; review before running.</p></div><div className="ai-actions"><button type="button" className="btn btn-secondary" disabled={loading} onClick={() => { setCommodity('semiconductors'); setRegion('East Asia'); setHorizon(6); }}>Semiconductors</button><button type="button" className="btn btn-secondary" disabled={loading} onClick={() => { setCommodity('corrugated packaging'); setRegion('North America'); setHorizon(12); }}>Packaging</button><button type="button" className="btn btn-secondary" disabled={loading} onClick={() => { setCommodity('industrial chemicals'); setRegion('Europe'); setHorizon(18); }}>Industrial chemicals</button></div></div>
       <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap', marginBottom: '1.5rem' }}>
         <div style={{ flex: 1, minWidth: 220 }}>
           <label style={{ display: 'block', fontSize: 13, color: '#374151', marginBottom: 6 }}>Commodity (optional)</label>
@@ -71,12 +73,10 @@ export default function SupplyChainResiliencePage({ token }) {
         {loading ? 'Mapping...' : 'Run Resilience Map'}
       </button>
 
-      {result && (
+      {result !== null && (
         <div style={{ background: '#fff', border: '1px solid #e5e7eb', borderRadius: 12, padding: '1.5rem' }}>
           <h2 style={{ fontSize: '1.1rem', fontWeight: 600, marginBottom: '0.75rem' }}>Resilience Map</h2>
-          <pre style={{ whiteSpace: 'pre-wrap', fontSize: 12, color: '#374151', background: '#f9fafb', padding: 14, borderRadius: 8, overflow: 'auto' }}>
-            {JSON.stringify(result, null, 2)}
-          </pre>
+          <FormattedAIReport response={result} />
         </div>
       )}
     </div>

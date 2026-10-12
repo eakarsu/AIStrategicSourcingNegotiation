@@ -30,7 +30,7 @@ export default function Dashboard({ token }) {
 
     Promise.all(
       endpoints.map(ep =>
-        axios.get(`${API}${ep.url}`, { headers }).then(r => ({ [ep.key]: r.data.length })).catch(() => ({ [ep.key]: 0 }))
+        axios.get(`${API}${ep.url}`, { headers }).then(r => ({ [ep.key]: Array.isArray(r.data) ? r.data.length : (Array.isArray(r.data?.data) ? (r.data.pagination?.total ?? r.data.data.length) : 0) })).catch(() => ({ [ep.key]: 0 }))
       )
     ).then(results => {
       const merged = {};

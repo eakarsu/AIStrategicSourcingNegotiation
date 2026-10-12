@@ -89,7 +89,7 @@ export default function RiskAssessmentPage({ token }) {
         mitigation_strategy: selected.mitigation_strategy
       }, { headers });
       setAiResult(res.data);
-    } catch (err) { toast.error('AI risk assessment failed'); }
+    } catch (err) { const reason = err.response?.data?.error || 'AI service could not be reached.'; setAiResult({ result: { status: 'Unavailable', reason } }); toast.error(reason); }
     setAiLoading(false);
   };
 

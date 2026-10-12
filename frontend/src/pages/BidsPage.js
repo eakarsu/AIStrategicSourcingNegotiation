@@ -77,7 +77,7 @@ export default function BidsPage({ token }) {
         }))
       }, { headers });
       setAiResult(res.data);
-    } catch (err) { toast.error('AI comparison failed'); }
+    } catch (err) { const reason = err.response?.data?.error || 'AI service could not be reached.'; setAiResult({ result: { status: 'Unavailable', reason } }); toast.error(reason); }
     setAiLoading(false);
   };
 

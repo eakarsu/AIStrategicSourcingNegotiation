@@ -86,7 +86,7 @@ export default function SavingsPage({ token }) {
         savings_type: selected.savings_type
       }, { headers });
       setAiResult(res.data);
-    } catch (err) { toast.error('AI optimization failed'); }
+    } catch (err) { const reason = err.response?.data?.error || 'AI service could not be reached.'; setAiResult({ result: { status: 'Unavailable', reason } }); toast.error(reason); }
     setAiLoading(false);
   };
 

@@ -59,7 +59,7 @@ export default function ActivityLogPage({ token }) {
       if (entityFilter) params.append('entity_type', entityFilter);
       if (actionFilter) params.append('action', actionFilter);
       const res = await axios.get(`${API}/api/activity-log?${params}`, { headers });
-      setLogs(res.data.logs || res.data);
+      setLogs(Array.isArray(res.data) ? res.data : Array.isArray(res.data?.logs) ? res.data.logs : Array.isArray(res.data?.data) ? res.data.data : []);
     } catch (err) { toast.error('Failed to load activity log'); }
     setLoading(false);
   };

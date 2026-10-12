@@ -88,7 +88,7 @@ export default function ScorecardsPage({ token }) {
         on_time_delivery_pct: selected.on_time_delivery_pct
       }, { headers });
       setAiResult(res.data);
-    } catch (err) { toast.error('AI performance review failed'); }
+    } catch (err) { const reason = err.response?.data?.error || 'AI service could not be reached.'; setAiResult({ result: { status: 'Unavailable', reason } }); toast.error(reason); }
     setAiLoading(false);
   };
 

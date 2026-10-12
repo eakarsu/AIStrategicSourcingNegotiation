@@ -26,7 +26,7 @@ router.get('/spend-by-category', auth, async (req, res) => {
          WHERE spend_category IS NOT NULL
          GROUP BY spend_category
          ORDER BY total_spend DESC
-         LIMIT 12`
+         LIMIT 15`
       );
       rows = r.rows;
     } catch (e) {
@@ -61,7 +61,7 @@ router.get('/supplier-risk-heatmap', auth, async (req, res) => {
     const riskTypes = ['Financial', 'Operational', 'Compliance', 'Geopolitical', 'Cyber', 'ESG'];
     let suppliers = [];
     try {
-      const r = await pool.query('SELECT id, name FROM suppliers ORDER BY id LIMIT 10');
+      const r = await pool.query('SELECT id, company_name AS name FROM suppliers ORDER BY id LIMIT 15');
       suppliers = r.rows;
     } catch (e) {
       suppliers = [];

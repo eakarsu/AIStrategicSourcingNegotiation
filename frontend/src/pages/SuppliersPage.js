@@ -27,7 +27,7 @@ export default function SuppliersPage({ token }) {
   const fetchItems = async () => {
     try {
       const res = await axios.get(`${API}/api/suppliers`, { headers });
-      setItems(res.data);
+      setItems(Array.isArray(res.data?.data) ? res.data.data : []);
     } catch (err) { toast.error('Failed to load suppliers'); }
     setLoading(false);
   };
@@ -88,7 +88,7 @@ export default function SuppliersPage({ token }) {
         years_in_business: selected.years_in_business
       }, { headers });
       setAiResult(res.data);
-    } catch (err) { toast.error('AI evaluation failed'); }
+    } catch (err) { const reason = err.response?.data?.error || 'AI service could not be reached.'; setAiResult({ result: { status: 'Unavailable', reason } }); toast.error(reason); }
     setAiLoading(false);
   };
 

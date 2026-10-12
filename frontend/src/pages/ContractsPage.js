@@ -27,7 +27,7 @@ export default function ContractsPage({ token }) {
   const fetchItems = async () => {
     try {
       const res = await axios.get(`${API}/api/contracts`, { headers });
-      setItems(res.data);
+      setItems(Array.isArray(res.data?.data) ? res.data.data : []);
     } catch (err) { toast.error('Failed to load contracts'); }
     setLoading(false);
   };
@@ -85,7 +85,7 @@ export default function ContractsPage({ token }) {
         sla_terms: selected.sla_terms
       }, { headers });
       setAiResult(res.data);
-    } catch (err) { toast.error('AI drafting failed'); }
+    } catch (err) { const reason = err.response?.data?.error || 'AI service could not be reached.'; setAiResult({ result: { status: 'Unavailable', reason } }); toast.error(reason); }
     setAiLoading(false);
   };
 

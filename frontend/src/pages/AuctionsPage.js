@@ -27,7 +27,7 @@ export default function AuctionsPage({ token }) {
   const fetchItems = async () => {
     try {
       const res = await axios.get(`${API}/api/auctions`, { headers });
-      setItems(res.data);
+      setItems(Array.isArray(res.data?.data) ? res.data.data : []);
     } catch (err) { toast.error('Failed to load Auctions'); }
     setLoading(false);
   };
@@ -87,7 +87,7 @@ export default function AuctionsPage({ token }) {
         number_of_bidders: selected.number_of_bidders
       }, { headers });
       setAiResult(res.data);
-    } catch (err) { toast.error('AI strategy generation failed'); }
+    } catch (err) { const reason = err.response?.data?.error || 'AI service could not be reached.'; setAiResult({ result: { status: 'Unavailable', reason } }); toast.error(reason); }
     setAiLoading(false);
   };
 

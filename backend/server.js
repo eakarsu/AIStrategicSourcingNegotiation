@@ -59,7 +59,8 @@ app.use('/api/market-intel', require('./routes/marketIntel'));
 app.use('/api/scorecards', require('./routes/scorecards'));
 app.use('/api/approvals', require('./routes/approvals'));
 app.use('/api/category-strategy', require('./routes/categoryStrategy'));
-if (generatedRoutesEnabled) app.use('/api/ai', require('./routes/ai'));
+app.use('/api/ai', require('./routes/ai'));
+app.use('/api/custom-views', require('./routes/customViews'));
 app.use('/api/export', require('./routes/export'));
 app.use('/api/activity-log', require('./routes/activityLog'));
 app.use('/api/notifications', require('./routes/notifications'));
@@ -101,6 +102,14 @@ if (generatedRoutesEnabled) io.on('connection', (socket) => {
 app.use('/api/governed-sourcing-negotiation', require('./governance'));
 app.use('/api/governance', require('./governance'));
 
+
+// Advisory AI reports only; native execution and approval routes stay unchanged.
+const aiWorkspaceSupport = require("./aiWorkspaceAdapters.cjs");
+const aiWorkspaceDatabase = pool;
+app.use('/api/report-workspace', require("./aiWorkspace.cjs").createAIWorkspaceRouter({
+  pool: aiWorkspaceDatabase, authenticateToken: require("./middleware/auth.js"),
+  aiRateLimiter: aiWorkspaceSupport.createWorkspaceLimiter(), features: require("./aiWorkspaceFeatures.json"),
+}));
 server.listen(PORT, () => {
   console.log(`Backend server running on port ${PORT}`);
 });

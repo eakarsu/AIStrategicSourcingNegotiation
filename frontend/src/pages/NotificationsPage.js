@@ -38,7 +38,7 @@ export default function NotificationsPage({ token }) {
   const fetchNotifications = async () => {
     try {
       const res = await axios.get(`${API}/api/notifications`, { headers });
-      setNotifications(res.data);
+      setNotifications(Array.isArray(res.data) ? res.data : Array.isArray(res.data?.data) ? res.data.data : []);
     } catch (err) { toast.error('Failed to load notifications'); }
     setLoading(false);
   };

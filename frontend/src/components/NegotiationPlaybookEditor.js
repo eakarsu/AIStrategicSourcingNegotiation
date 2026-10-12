@@ -16,7 +16,7 @@ export default function NegotiationPlaybookEditor({ token }) {
   const load = () => {
     axios
       .get(`${API}/api/custom-views/playbook-tactics`, { headers })
-      .then(r => setTactics(r.data.tactics || []))
+      .then(r => setTactics(Array.isArray(r.data?.tactics) ? r.data.tactics : []))
       .catch(e => setStatus('load error: ' + e.message));
   };
 

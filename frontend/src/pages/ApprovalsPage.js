@@ -27,7 +27,7 @@ export default function ApprovalsPage({ token }) {
   const fetchItems = async () => {
     try {
       const res = await axios.get(`${API}/api/approvals`, { headers });
-      setItems(res.data);
+      setItems(Array.isArray(res.data?.data) ? res.data.data : []);
     } catch (err) { toast.error('Failed to load approval workflows'); }
     setLoading(false);
   };
@@ -86,7 +86,7 @@ export default function ApprovalsPage({ token }) {
         department: selected.department
       }, { headers });
       setAiResult(res.data);
-    } catch (err) { toast.error('AI review failed'); }
+    } catch (err) { const reason = err.response?.data?.error || 'AI service could not be reached.'; setAiResult({ result: { status: 'Unavailable', reason } }); toast.error(reason); }
     setAiLoading(false);
   };
 

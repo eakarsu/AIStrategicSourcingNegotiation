@@ -77,7 +77,7 @@ export default function NegotiationPage({ token }) {
         leverage_points: selected.leverage_points
       }, { headers });
       setAiResult(res.data);
-    } catch (err) { toast.error('AI generation failed'); }
+    } catch (err) { const reason = err.response?.data?.error || 'AI service could not be reached.'; setAiResult({ result: { status: 'Unavailable', reason } }); toast.error(reason); }
     setAiLoading(false);
   };
 

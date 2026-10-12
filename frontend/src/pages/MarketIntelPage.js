@@ -88,7 +88,7 @@ export default function MarketIntelPage({ token }) {
         key_drivers: selected.key_drivers
       }, { headers });
       setAiResult(res.data);
-    } catch (err) { toast.error('AI analysis failed'); }
+    } catch (err) { const reason = err.response?.data?.error || 'AI service could not be reached.'; setAiResult({ result: { status: 'Unavailable', reason } }); toast.error(reason); }
     setAiLoading(false);
   };
 

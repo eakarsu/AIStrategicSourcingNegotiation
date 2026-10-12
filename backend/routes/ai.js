@@ -89,7 +89,7 @@ Return JSON: { "analysis": { "recommendations": [], "risks": [], "savings_opport
     await persistAIResult(pool, req.user.id, 'generate-rfp', { title, category, requirements, budget_range }, result);
     res.json({ result: result.raw || content, parsed: result, type: 'rfp_generation' });
   } catch (err) {
-    res.status(500).json({ error: 'AI service error' });
+    res.status(err.statusCode === 503 ? 503 : 500).json({ error: err.statusCode === 503 ? err.message : 'AI service error' });
   }
 });
 
@@ -119,7 +119,7 @@ Return JSON: { "analysis": { "recommendations": [], "risks": [], "savings_opport
     await persistAIResult(pool, req.user.id, 'compare-bids', { rfp_id, criteria }, result);
     res.json({ result: result.raw || content, parsed: result, type: 'bid_comparison' });
   } catch (err) {
-    res.status(500).json({ error: 'AI service error' });
+    res.status(err.statusCode === 503 ? 503 : 500).json({ error: err.statusCode === 503 ? err.message : 'AI service error' });
   }
 });
 
@@ -143,7 +143,7 @@ Return JSON: { "material_cost": 0, "labor_cost": 0, "overhead": 0, "margin": 0, 
     await persistAIResult(pool, req.user.id, 'should-cost', { product_name, category, material_cost, labor_cost, overhead_cost, volume, market_price }, result);
     res.json({ result: result.raw || content, parsed: result, type: 'should_cost' });
   } catch (err) {
-    res.status(500).json({ error: 'AI service error' });
+    res.status(err.statusCode === 503 ? 503 : 500).json({ error: err.statusCode === 503 ? err.message : 'AI service error' });
   }
 });
 
@@ -174,7 +174,7 @@ Return JSON: { "batna_value": 0, "zopa_range": { "min": 0, "max": 0 }, "leverage
     await persistAIResult(pool, req.user.id, 'negotiation-points', { negotiation_id, negotiation_title, vendor_name }, result);
     res.json({ result: result.raw || content, parsed: result, type: 'negotiation_points' });
   } catch (err) {
-    res.status(500).json({ error: 'AI service error' });
+    res.status(err.statusCode === 503 ? 503 : 500).json({ error: err.statusCode === 503 ? err.message : 'AI service error' });
   }
 });
 
@@ -197,7 +197,7 @@ Return JSON: { "analysis": { "recommendations": [], "risks": [], "savings_opport
     await persistAIResult(pool, req.user.id, 'draft-contract', { contract_title, vendor_name, contract_type, total_value }, result);
     res.json({ result: result.raw || content, parsed: result, type: 'contract_draft' });
   } catch (err) {
-    res.status(500).json({ error: 'AI service error' });
+    res.status(err.statusCode === 503 ? 503 : 500).json({ error: err.statusCode === 503 ? err.message : 'AI service error' });
   }
 });
 
@@ -220,7 +220,7 @@ Return JSON: { "analysis": { "recommendations": [], "risks": [], "savings_opport
     await persistAIResult(pool, req.user.id, 'evaluate-supplier', { company_name, category }, result);
     res.json({ result: result.raw || content, parsed: result, type: 'supplier_evaluation' });
   } catch (err) {
-    res.status(500).json({ error: 'AI service error' });
+    res.status(err.statusCode === 503 ? 503 : 500).json({ error: err.statusCode === 503 ? err.message : 'AI service error' });
   }
 });
 
@@ -242,7 +242,7 @@ Return JSON: { "analysis": { "recommendations": [], "risks": [], "savings_opport
     await persistAIResult(pool, req.user.id, 'analyze-spend', { spend_category, department, amount }, result);
     res.json({ result: result.raw || content, parsed: result, type: 'spend_analysis' });
   } catch (err) {
-    res.status(500).json({ error: 'AI service error' });
+    res.status(err.statusCode === 503 ? 503 : 500).json({ error: err.statusCode === 503 ? err.message : 'AI service error' });
   }
 });
 
@@ -264,7 +264,7 @@ Return JSON: { "analysis": { "recommendations": [], "risks": [], "savings_opport
     await persistAIResult(pool, req.user.id, 'optimize-savings', { initiative_name, category, original_cost, negotiated_cost }, result);
     res.json({ result: result.raw || content, parsed: result, type: 'savings_optimization' });
   } catch (err) {
-    res.status(500).json({ error: 'AI service error' });
+    res.status(err.statusCode === 503 ? 503 : 500).json({ error: err.statusCode === 503 ? err.message : 'AI service error' });
   }
 });
 
@@ -287,7 +287,7 @@ Return JSON: { "analysis": { "recommendations": [], "risks": [], "savings_opport
     await persistAIResult(pool, req.user.id, 'assess-risk', { assessment_title, vendor_name, risk_category }, result);
     res.json({ result: result.raw || content, parsed: result, type: 'risk_assessment' });
   } catch (err) {
-    res.status(500).json({ error: 'AI service error' });
+    res.status(err.statusCode === 503 ? 503 : 500).json({ error: err.statusCode === 503 ? err.message : 'AI service error' });
   }
 });
 
@@ -310,7 +310,7 @@ Return JSON: { "analysis": { "recommendations": [], "risks": [], "savings_opport
     await persistAIResult(pool, req.user.id, 'compliance-review', { requirement_name, vendor_name, compliance_status }, result);
     res.json({ result: result.raw || content, parsed: result, type: 'compliance_review' });
   } catch (err) {
-    res.status(500).json({ error: 'AI service error' });
+    res.status(err.statusCode === 503 ? 503 : 500).json({ error: err.statusCode === 503 ? err.message : 'AI service error' });
   }
 });
 
@@ -332,7 +332,7 @@ Return JSON: { "bid_schedule": [{ "round": 1, "target_price": 0, "decrement": 0,
     await persistAIResult(pool, req.user.id, 'auction-strategy', { auction_title, category, starting_price, reserve_price }, result);
     res.json({ result: result.raw || content, parsed: result, type: 'auction_strategy' });
   } catch (err) {
-    res.status(500).json({ error: 'AI service error' });
+    res.status(err.statusCode === 503 ? 503 : 500).json({ error: err.statusCode === 503 ? err.message : 'AI service error' });
   }
 });
 
@@ -355,7 +355,7 @@ Return JSON: { "analysis": { "recommendations": [], "risks": [], "savings_opport
     await persistAIResult(pool, req.user.id, 'market-analysis', { report_title, commodity, current_price }, result);
     res.json({ result: result.raw || content, parsed: result, type: 'market_analysis' });
   } catch (err) {
-    res.status(500).json({ error: 'AI service error' });
+    res.status(err.statusCode === 503 ? 503 : 500).json({ error: err.statusCode === 503 ? err.message : 'AI service error' });
   }
 });
 
@@ -378,7 +378,7 @@ Return JSON: { "analysis": { "recommendations": [], "risks": [], "savings_opport
     await persistAIResult(pool, req.user.id, 'performance-review', { vendor_name, overall_score }, result);
     res.json({ result: result.raw || content, parsed: result, type: 'performance_review' });
   } catch (err) {
-    res.status(500).json({ error: 'AI service error' });
+    res.status(err.statusCode === 503 ? 503 : 500).json({ error: err.statusCode === 503 ? err.message : 'AI service error' });
   }
 });
 
@@ -400,7 +400,7 @@ Return JSON: { "analysis": { "recommendations": [], "risks": [], "savings_opport
     await persistAIResult(pool, req.user.id, 'review-approval', { request_title, request_type, amount }, result);
     res.json({ result: result.raw || content, parsed: result, type: 'approval_review' });
   } catch (err) {
-    res.status(500).json({ error: 'AI service error' });
+    res.status(err.statusCode === 503 ? 503 : 500).json({ error: err.statusCode === 503 ? err.message : 'AI service error' });
   }
 });
 
@@ -423,7 +423,7 @@ Return JSON: { "matrix_quadrant": "strategic|leverage|bottleneck|non-critical", 
     await persistAIResult(pool, req.user.id, 'category-analysis', { category_name, annual_spend, strategic_importance, supply_risk }, result);
     res.json({ result: result.raw || content, parsed: result, type: 'category_analysis' });
   } catch (err) {
-    res.status(500).json({ error: 'AI service error' });
+    res.status(err.statusCode === 503 ? 503 : 500).json({ error: err.statusCode === 503 ? err.message : 'AI service error' });
   }
 });
 
@@ -446,7 +446,7 @@ Return JSON: { "consolidations": [{ "from_vendors": [], "to_vendor": "", "projec
     await persistAIResult(pool, req.user.id, 'supplier-consolidation', { spendRows: spendData.rows.length }, result);
     res.json({ result: result.raw || content, parsed: result, type: 'supplier_consolidation' });
   } catch (err) {
-    res.status(500).json({ error: 'AI service error' });
+    res.status(err.statusCode === 503 ? 503 : 500).json({ error: err.statusCode === 503 ? err.message : 'AI service error' });
   }
 });
 
@@ -474,7 +474,7 @@ Return JSON:
     await persistAIResult(pool, req.user.id, 'supplier-diversity', { suppliers: suppliers.rows.length }, result);
     res.json({ result: content, parsed: result, type: 'supplier_diversity' });
   } catch (err) {
-    res.status(500).json({ error: 'AI service error' });
+    res.status(err.statusCode === 503 ? 503 : 500).json({ error: err.statusCode === 503 ? err.message : 'AI service error' });
   }
 });
 
@@ -513,7 +513,7 @@ Return JSON:
     await persistAIResult(pool, req.user.id, 'delivery-risk', { supplier_id }, result);
     res.json({ result: content, parsed: result, type: 'delivery_risk' });
   } catch (err) {
-    res.status(500).json({ error: 'AI service error' });
+    res.status(err.statusCode === 503 ? 503 : 500).json({ error: err.statusCode === 503 ? err.message : 'AI service error' });
   }
 });
 
@@ -558,7 +558,7 @@ Return JSON:
     if (err.statusCode === 503) {
       return res.status(503).json({ error: err.message });
     }
-    res.status(500).json({ error: 'AI service error' });
+    res.status(err.statusCode === 503 ? 503 : 500).json({ error: err.statusCode === 503 ? err.message : 'AI service error' });
   }
 });
 
@@ -612,7 +612,7 @@ Return JSON:
     if (err.statusCode === 503) {
       return res.status(503).json({ error: err.message });
     }
-    res.status(500).json({ error: 'AI service error' });
+    res.status(err.statusCode === 503 ? 503 : 500).json({ error: err.statusCode === 503 ? err.message : 'AI service error' });
   }
 });
 
